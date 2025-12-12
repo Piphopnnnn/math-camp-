@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Math Camp 2025 - Ultimate Wheel (Final)</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700;800&family=Kanit:wght@300;400;500;600;800&family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* --- DESIGN SYSTEM --- */
+        :root { 
+            --bg-gradient: linear-gradient(135deg, #66CCFF 0%, #A98CFF 60%, #D6B8FF 100%);
+            --bg-panel: rgba(255, 255, 255, 0.85);
+            --color-primary: #5E60CE;
+            --color-secondary: #48BFE3;
+            --text-main: #2b2d42;
+            --text-muted: #555b6e;
+            --shadow-soft: 0 10px 30px rgba(100, 100, 255, 0.15);
+            --panel-border: 1px solid rgba(255, 255, 255, 0.6);
+            --font-display: 'Chakra Petch', sans-serif;
+            --font-ui: 'Kanit', sans-serif;
+            --font-body: 'Sarabun', sans-serif;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        
+        body { 
+            font-family: var(--font-body); 
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main); 
+            min-height: 100vh; 
+            overflow-x: hidden; 
+            display: flex; flex-direction: column; 
+        }
+        
+        .math-bg { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: -1; opacity: 0.4; 
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255,255,255,0.4) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255,255,255,0.4) 0%, transparent 25%);
+            pointer-events: none;
+            mix-blend-mode: overlay;
+        }
+        
+        .container { 
+            max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; 
+            width: 100%; flex: 1; display: flex; flex-direction: column; 
+        }
+
+        header { text-align: center; margin-bottom: 2.5rem; position: relative; z-index: 20; }
+        
+        .logo-badge { 
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255, 255, 255, 0.9); 
+            color: var(--color-primary);
+            border: 1px solid rgba(255,255,255,0.8);
+            padding: 0.5rem 1.5rem; border-radius: 50px; font-size: 0.9rem; 
+            font-family: var(--font-ui); font-weight: 600; 
+            margin-bottom: 2rem; 
+            text-transform: uppercase; letter-spacing: 1.5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            animation: badgeFloat 3s ease-in-out infinite;
+        }
+
+        .title-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+            z-index: 10;
+        }
+
+        h1.hero-title { 
+            font-family: var(--font-display); 
+            font-size: 4.5rem; 
+            font-weight: 800; 
+            letter-spacing: 2px;
+            line-height: 1.1;
+            margin: 0;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 2;
+            cursor: default;
+            background: linear-gradient(180deg, #FFFFFF 20%, #E6E6FA 80%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent; 
+            filter: 
+                drop-shadow(0px 2px 0px rgba(94, 96, 206, 1)) 
+                drop-shadow(2px 0px 0px rgba(94, 96, 206, 1)) 
+                drop-shadow(-1px -1px 0px rgba(94, 96, 206, 1)) 
+                drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
+            opacity: 0;
+            animation: titleEntrance 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .title-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 110%; height: 130%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(43, 45, 66, 0.15); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 60px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 
+                0 8px 32px 0 rgba(31, 38, 135, 0.1),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+            z-index: 1;
+            opacity: 0;
+            animation: backdropExpand 0.6s 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        h1.hero-title::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            z-index: 3;
+            background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.8) 50%, transparent 70%);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shimmerSweep 4s infinite linear;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+        }
+
+        @keyframes titleEntrance {
+            0% { opacity: 0; transform: scale(0.8) translateY(30px); filter: blur(10px); }
+            100% { 
+                opacity: 1; transform: scale(1) translateY(0); 
+                filter: drop-shadow(0px 2px 0px rgba(94, 96, 206, 1)) drop-shadow(2px 0px 0px rgba(94, 96, 206, 1)) drop-shadow(-1px -1px 0px rgba(94, 96, 206, 1)) drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
+            }
+        }
+        @keyframes backdropExpand {
+            0% { opacity: 0; width: 50%; transform: translate(-50%, -50%) scale(0.5); }
+            100% { opacity: 1; width: 115%; transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes shimmerSweep {
+            0% { background-position: 150% 0; }
+            100% { background-position: -150% 0; }
+        }
+        @keyframes badgeFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @media (max-width: 1024px) {
+            h1.hero-title { font-size: 3.5rem; }
+            .title-wrapper::before { width: 110%; height: 120%; }
+        }
+        @media (max-width: 768px) {
+            h1.hero-title { font-size: 2.5rem; letter-spacing: 1px; }
+            .title-wrapper { margin-bottom: 1.5rem; }
+            .title-wrapper::before { width: 110%; border-radius: 40px; }
+        }
+        @media (max-width: 480px) {
+            h1.hero-title { font-size: 2rem; padding: 0 10px; }
+        }
+
+        .stats-bar { display: flex; justify-content: center; gap: 1.5rem; margin-top: 0.5rem; position: relative; z-index: 5; }
+        .stat-item { 
+            background: rgba(255, 255, 255, 0.85); 
+            padding: 0.6rem 1.2rem; 
+            border-radius: var(--radius-md); 
+            font-size: 0.9rem; 
+            border: 1px solid rgba(255,255,255,0.5);
+            display: flex; align-items: center; gap: 0.6rem; 
+            font-family: var(--font-ui); 
+            color: var(--text-muted);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .stat-item:hover { transform: translateY(-2px); }
+        .stat-value { font-weight: 700; color: var(--color-primary); font-size: 1.1rem; }
+
+        .main-grid { 
+            display: grid; 
+            grid-template-columns: 280px 1fr 280px; 
+            gap: 2.5rem; 
+            align-items: start; 
+        }
+        
+        .panel { 
+            background: var(--bg-panel); 
+            border-radius: var(--radius-lg); 
+            padding: 1.5rem; 
+            height: 100%; max-height: 600px; 
+            display: flex; flex-direction: column; 
+            border: var(--panel-border);
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .panel-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 1.2rem; padding-bottom: 0.8rem; 
+            border-bottom: 1px solid rgba(0,0,0,0.05); 
+        }
+        
+        .panel-title { 
+            font-family: var(--font-ui); font-size: 1.1rem; 
+            font-weight: 600; color: var(--text-main); 
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        textarea { 
+            flex: 1; 
+            background: rgba(255,255,255,0.6); 
+            border: 1px solid rgba(0,0,0,0.1); 
+            border-radius: var(--radius-md); 
+            color: #333; padding: 1rem; 
+            font-family: var(--font-ui); 
+            resize: none; margin-bottom: 1rem; 
+            font-size: 0.95rem; line-height: 1.6;
+            transition: all 0.2s;
+        }
+        textarea:focus { border-color: var(--color-secondary); background: #fff; box-shadow: 0 0 0 3px rgba(72, 191, 227, 0.2); }
+        
+        .btn { 
+            background: #fff; 
+            color: var(--text-muted); 
+            border: 1px solid rgba(0,0,0,0.1); 
+            padding: 0.8rem 1.5rem; border-radius: var(--radius-md); 
+            font-family: var(--font-ui); font-weight: 600; 
+            cursor: pointer; transition: all 0.2s ease; 
+            display: flex; align-items: center; justify-content: center; 
+            gap: 0.5rem; width: 100%; 
+            font-size: 0.9rem;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        
+        .btn-success { 
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-primary)); 
+            border: none; color: #fff; 
+            font-weight: 700;
+        }
+        .btn-success:hover { box-shadow: 0 6px 15px rgba(94, 96, 206, 0.3); color: #fff; }
+
+        .wheel-stage { 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            position: relative; width: 100%;
+        }
+
+        .wheel-wrapper { 
+            position: relative; width: 100%; max-width: 480px; 
+            aspect-ratio: 1 / 1; 
+            border-radius: 50%; margin: 0 auto;
+            z-index: 10;
+            will-change: transform, width, height; 
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.4s ease, height 0.4s ease; 
+            box-shadow: 0 20px 60px rgba(94, 96, 206, 0.25);
+            border: none; 
+        }
+        
+        .wheel-wrapper::after {
+            content: ''; position: absolute; inset: -20px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, transparent 70%);
+            z-index: -1; border-radius: 50%;
+            animation: pulse-glow 3s infinite alternate;
+        }
+
+        .wheel-wrapper.fullscreen {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); 
+            max-width: none; max-height: none; margin: 0; 
+            z-index: 9999;
+            box-shadow: 0 0 100px rgba(100, 100, 255, 0.4);
+            border: none;
+        }
+
+        .wheel-wrapper.fullscreen::before {
+            content: ''; position: fixed; 
+            top: -200vmax; left: -200vmax; right: -200vmax; bottom: -200vmax;
+            background: rgba(255, 255, 255, 0.85); /* Light dim */
+            backdrop-filter: blur(8px);
+            z-index: -2; pointer-events: none;
+            opacity: 1; transition: opacity 0.5s ease;
+        }
+        
+        .wheel-wrapper.fullscreen.zooming-out::before { opacity: 0; }
+
+        .fullscreen-close-hint {
+            position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%);
+            color: var(--text-muted); font-size: 1rem; font-weight: 600;
+            opacity: 0; transition: opacity 0.3s; pointer-events: none;
+            background: rgba(255,255,255,0.8); padding: 8px 20px; border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .wheel-wrapper.fullscreen .fullscreen-close-hint { opacity: 1; }
+
+        .wheel-outer-ring { display: none; }
+
+        canvas { 
+            width: 100%; height: 100%; border-radius: 50%; 
+            position: relative; z-index: 1; 
+            touch-action: none; user-select: none;
+        }
+
+        .wheel-pointer { 
+            position: absolute; top: -30px; left: 50%; transform: translateX(-50%); 
+            z-index: 20; 
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15)); 
+            pointer-events: none; will-change: transform;
+        }
+        
+        .wheel-pointer.tick-anim { animation: tick 0.1s ease-in-out; }
+
+        @keyframes tick {
+            0% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-6px); }
+            100% { transform: translateX(-50%) translateY(0); }
+        }
+
+        .pointer-body { 
+            width: 46px; height: 60px; 
+            background: linear-gradient(to bottom, #FF5C8D, #E01E5A); 
+            clip-path: path("M 0 0 L 46 0 L 23 60 Z");
+            border-top: 4px solid #fff; 
+        }
+        
+        .wheel-center { 
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 66px; height: 66px; 
+            background: #fff; 
+            border-radius: 50%; z-index: 5; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.1); 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 1.8rem; 
+            border: 4px solid var(--color-secondary); 
+            color: var(--color-primary);
+        }
+
+        .spin-btn-lg { 
+            margin-top: 3rem; 
+            font-size: 1.4rem; padding: 1rem 3.5rem; 
+            border-radius: 100px; 
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53); /* Warm contrast button */
+            color: #fff; 
+            font-family: var(--font-display); font-weight: 700; 
+            text-transform: uppercase; letter-spacing: 1.5px; 
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3); 
+            border: 3px solid rgba(255,255,255,0.5); 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative; overflow: hidden;
+        }
+        .spin-btn-lg:hover:not(:disabled) { 
+            transform: translateY(-4px) scale(1.03); 
+            box-shadow: 0 15px 35px rgba(255, 107, 107, 0.5); 
+        }
+        .spin-btn-lg:disabled { 
+            background: #d1d1d1; color: #888; 
+            box-shadow: none; cursor: not-allowed; border-color: transparent;
+        }
+
+        .history-list { overflow-y: auto; flex: 1; padding-right: 5px; }
+        .history-list::-webkit-scrollbar { width: 5px; }
+        .history-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        
+        .history-item { 
+            background: rgba(255,255,255,0.7); 
+            border-radius: var(--radius-md); 
+            padding: 1rem; margin-bottom: 0.8rem; 
+            border-left: 4px solid var(--color-secondary); 
+            animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            display: flex; justify-content: space-between; align-items: center; 
+        }
+        
+        .winner-info h4 { font-size: 1rem; color: var(--text-main); font-weight: 600; font-family: var(--font-ui); margin-bottom: 2px; }
+        .winner-info p { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-body); }
+
+        .modal-overlay { 
+            position: fixed; inset: 0; 
+            background: rgba(100, 100, 200, 0.25); 
+            backdrop-filter: blur(15px); 
+            z-index: 10000; 
+            display: none; 
+            justify-content: center; align-items: center; 
+            opacity: 0; transition: opacity 0.3s ease; 
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        
+        .modal-card { 
+            background: #fff; 
+            width: 90%; max-width: 550px; 
+            border-radius: 40px; padding: 3.5rem 2.5rem; 
+            text-align: center; 
+            border: 1px solid rgba(0,0,0,0.05); 
+            transform: scale(0.9); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); 
+            box-shadow: 0 25px 80px rgba(100, 100, 255, 0.2);
+            display: flex; flex-direction: column; align-items: center;
+            position: relative;
+        }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+
+        .celebration-header { 
+            background: linear-gradient(to right, #5E60CE, #48BFE3);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 1.8rem; font-weight: 800; font-family: var(--font-display);
+            margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px; 
+        }
+        .winner-label { color: #888; font-size: 1.1rem; margin-bottom: 0; font-family: var(--font-ui); }
+        
+        .winner-name-container {
+            width: 100%; min-height: 180px; 
+            display: flex; align-items: center; justify-content: center;
+            margin: 1.5rem 0; padding: 0; position: relative;
+        }
+        
+        .winner-name-big { 
+            font-weight: 800; 
+            color: var(--text-main);
+            font-family: var(--font-display);
+            line-height: 1.2; 
+            text-align: center;
+            word-wrap: break-word; width: 100%;
+        }
+
+        @media (max-width: 1024px) { 
+            .main-grid { grid-template-columns: 1fr; gap: 2rem; } 
+            .panel { max-height: none; } 
+            .history-panel { order: 3; } 
+            .config-panel { order: 2; } 
+            .wheel-stage { order: 1; margin-bottom: 1rem; } 
+        }
+
+        @keyframes pulse-glow { from { transform: scale(0.95); opacity: 0.6; } to { transform: scale(1.05); opacity: 0.9; } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        
+        .jump-toast { 
+            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) scale(0); 
+            background: #fff; color: var(--color-primary); 
+            padding: 1rem 2.5rem; border-radius: 50px; 
+            font-weight: 800; font-family: var(--font-display); font-size: 1.4rem; 
+            z-index: 20000; pointer-events: none; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 2px solid var(--color-secondary);
+        }
+        .jump-toast.show { transform: translate(-50%, -50%) scale(1); }
+        
+        .sound-toggle { 
+            position: absolute; top: 1.5rem; right: 1.5rem; 
+            background: rgba(255, 255, 255, 0.3); 
+            border: 1px solid rgba(255, 255, 255, 0.6); 
+            color: #fff; 
+            width: 44px; height: 44px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; z-index: 100; transition: all 0.3s; 
+        }
+        .sound-toggle:hover { background: #fff; color: var(--color-primary); }
+    </style>
+</head>
+<body>
+
+<div class="math-bg"></div>
+
+<button class="sound-toggle" id="soundToggle" title="เปิด/ปิดเสียง">
+    <i class="fas fa-volume-up"></i>
+</button>
+
+<div class="container">
+    <header>
+        <div class="logo-badge">
+            <i class="fas fa-graduation-cap" style="color:var(--color-primary)"></i> MSU Math Camp 2025 ▪ Banthaen Wittaya school
+        </div>
+        
+        <div class="title-wrapper">
+            <h1 class="hero-title" data-text="Math Camp Lucky Wheel">Math Camp Lucky Wheel</h1>
+        </div>
+        
+        <div class="stats-bar">
+            <div class="stat-item">
+                <i class="fas fa-users" style="color:var(--color-secondary)"></i>
+                <span>ผู้เข้าร่วม:</span>
+                <span class="stat-value" id="activeCount" style="color:var(--color-secondary)">0</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-trophy" style="color:#FF6B6B"></i>
+                <span>แจกแล้ว:</span>
+                <span class="stat-value" id="winnerCount" style="color:#FF6B6B">0</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-grid">
+        <div class="panel config-panel">
+            <div class="panel-header">
+                <div class="panel-title"><i class="fas fa-list-ul" style="color:var(--color-primary)"></i> รายชื่อผู้สุ่ม</div>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column;">
+                <textarea id="namesInput" placeholder="ใส่รายชื่อที่นี่..."></textarea>
+                <button class="btn btn-success" id="updateBtn">
+                    <i class="fas fa-check"></i> บันทึกรายชื่อ
+                </button>
+                <div style="margin-top:15px; display:flex; gap:10px; justify-content:center;">
+                    <button class="btn" onclick="moveBackward()" style="font-size:0.85rem; padding:0.6rem;">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="btn" onclick="moveForward()" style="font-size:0.85rem; padding:0.6rem;">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="wheel-stage" id="wheelStageContainer">
+            <div class="wheel-wrapper" id="wheelWrapper">
+                <div class="wheel-outer-ring"></div>
+                
+                <div class="wheel-pointer" id="wheelPointer">
+                    <div class="pointer-body"></div>
+                </div>
+                <canvas id="wheelCanvas"></canvas>
+                
+                <div class="wheel-center">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div id="jumpToast" class="jump-toast">กระโดด!</div>
+                <div class="fullscreen-close-hint">กด ESC เพื่อปิด</div>
+            </div>
+
+            <button class="btn spin-btn-lg" id="spinBtn">
+                หมุนวงล้อ!
+            </button>
+        </div>
+
+        <div class="panel history-panel">
+            <div class="panel-header">
+                <div class="panel-title"><i class="fas fa-history" style="color:var(--color-accent)"></i> ประวัติผู้ชนะ</div>
+                <button class="btn" style="width:auto; padding:0.4rem 0.8rem; background:transparent; border:1px solid #ddd; color:#999;" onclick="clearHistory()">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+            <div class="history-list" id="historyList">
+                <div id="history-placeholder" style="text-align:center; padding:3rem 1rem; color:#aaa; opacity:0.8;">
+                    <i class="fas fa-cube" style="font-size:2rem; margin-bottom:1rem; opacity:0.5;"></i>
+                    <br>ยังไม่มีผู้ชนะ
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div class="modal-overlay" id="winnerModal">
+    <div class="modal-card">
+        <div class="celebration-header">ขอแสดงความยินดี !</div>
+        <div class="winner-label">กลุ่มโชคดีประจำรอบนี้คือ</div>
+        
+        <div class="winner-name-container" id="winnerContainer">
+            <div class="winner-name-big" id="winnerName">...</div>
+        </div>
+
+        <div style="color:#666; margin-bottom: 2.5rem; font-family: var(--font-body);">กลุ่มที่ได้รับรางวัลจาก Math Camp 2025</div>
+        
+        <button class="btn" onclick="closeModalAndRemove()" style="background: linear-gradient(135deg, var(--color-secondary), var(--color-primary)); color: #fff; font-weight:700; font-size:1.2rem; padding: 1.2rem 4rem; width: auto; border-radius: 50px; border:none; box-shadow: 0 10px 30px rgba(94, 96, 206, 0.3);">
+            รับรางวัล
+        </button>
+    </div>
+</div>
+
+<audio id="sound-win" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
+<audio id="sound-cheer" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3" preload="auto"></audio>
+<audio id="sound-jump" src="https://assets.mixkit.co/active_storage/sfx/2578/2578-preview.mp3" preload="auto"></audio>
+<audio id="sound-click" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let participants = [];
+        let isSpinning = false;
+        let currentRotation = 0; 
+        let isSoundOn = true;
+        let currentWinnerIndex = -1;
+
+        // --- STORY CONTROL ---
+        let actionQueue = []; 
+        let isChaining = false;
+        let chainCount = 0;
+        const CHAIN_LIMIT_LOCKED = 1; // *** แก้ไขจุดนี้เป็น 1 รอบ ตามที่ขอครับ ***
+        const CHAIN_LIMIT_MAX = 10; // Safety break
+
+        // PHYSICS VARS
+        let wheelCache = null; 
+        let rafId = null;
+        let targetRotation = 0;
+        let angularVelocity = 0; 
+        let angularDeceleration = 0; 
+        let isAnimating = false;
+        let lastFrameTime = 0;
+        let lastTickSlice = -1;
+        let lastDrawnRotation = -1; 
+
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d', { alpha: true });
+        const spinBtn = document.getElementById('spinBtn');
+        const namesInput = document.getElementById('namesInput');
+        const updateBtn = document.getElementById('updateBtn');
+        const modal = document.getElementById('winnerModal');
+        const winnerNameDisplay = document.getElementById('winnerName');
+        const winnerContainer = document.getElementById('winnerContainer');
+        const historyList = document.getElementById('historyList');
+        const activeCountEl = document.getElementById('activeCount');
+        const winnerCountEl = document.getElementById('winnerCount');
+        const jumpToast = document.getElementById('jumpToast');
+        const soundToggle = document.getElementById('soundToggle');
+        const wheelPointer = document.getElementById('wheelPointer');
+        const wheelWrapper = document.getElementById('wheelWrapper'); 
+
+        let originalParent = null;
+        let nextSibling = null;
+
+        const audioWin = document.getElementById('sound-win');
+        const audioJump = document.getElementById('sound-jump');
+        const audioCheer = document.getElementById('sound-cheer');
+        const clickSrc = document.getElementById('sound-click').src;
+        
+        const clickPool = []; 
+        for(let i=0; i<8; i++) {
+            let a = new Audio(clickSrc);
+            a.volume = 0.4;
+            clickPool.push(a);
+        }
+        let clickPoolIdx = 0;
+
+        function enterFullscreen() {
+            if(wheelWrapper.classList.contains('fullscreen')) return;
+            originalParent = wheelWrapper.parentNode;
+            nextSibling = wheelWrapper.nextSibling;
+            document.body.appendChild(wheelWrapper);
+            document.body.style.overflow = 'hidden';
+            wheelWrapper.classList.add('fullscreen');
+            wheelWrapper.classList.remove('zooming-out');
+            applyFullscreenSize();
+            requestAnimationFrame(() => {
+                initCanvasSize();
+                createWheelCache();
+                drawWheelFrame();
+            });
+        }
+
+        function exitFullscreen() {
+            if(!wheelWrapper.classList.contains('fullscreen')) return;
+            wheelWrapper.classList.remove('fullscreen');
+            wheelWrapper.classList.add('zooming-out'); 
+            document.body.style.overflow = '';
+            if(originalParent) originalParent.insertBefore(wheelWrapper, nextSibling);
+            wheelWrapper.style.width = '';
+            wheelWrapper.style.height = '';
+            setTimeout(() => {
+                wheelWrapper.classList.remove('zooming-out');
+                initCanvasSize();
+                createWheelCache();
+                drawWheelFrame();
+            }, 400); 
+        }
+
+        function applyFullscreenSize() {
+            if (!wheelWrapper.classList.contains('fullscreen')) return;
+            const safeMargin = Math.max(16, Math.floor(Math.min(window.innerWidth, window.innerHeight) * 0.05)); 
+            const viewportW = window.innerWidth - (safeMargin * 2);
+            const viewportH = window.innerHeight - (safeMargin * 2);
+            const size = Math.floor(Math.min(viewportW, viewportH));
+            wheelWrapper.style.width = size + 'px';
+            wheelWrapper.style.height = size + 'px';
+        }
+
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (wheelWrapper.classList.contains('fullscreen')) {
+                    applyFullscreenSize();
+                }
+                initCanvasSize();
+                createWheelCache(); 
+                if (!isAnimating) drawWheelFrame();
+            }, 100);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && wheelWrapper.classList.contains('fullscreen')) {
+                if (!isSpinning) exitFullscreen();
+            }
+        });
+
+        updateBtn.addEventListener('click', parseInputAndDraw);
+        spinBtn.addEventListener('click', startSpinSequence);
+        
+        // --- PRESET DATA ---
+        namesInput.value = `วงกลม
+RIGHT90
+[NAME_1]
+RANDOMSTEP
+ทรงกลม
+LEFT90
+[NAME_2]
+OPPOSITE
++2
+RIGHT90
+ร้อยละ
+RANDOMSTEP
+[NAME_3]
+LEFT90
+สี่เหลี่ยมคางหมู
+OPPOSITE
+[NAME_4]
+RIGHT90
+PREVNAME
+RANDOMSTEP
+ดอกเบี้ย
+LEFT90
+[NAME_5]
+OPPOSITE
+-1
+RIGHT90
+สามเหลี่ยม
+RANDOMSTEP
+[NAME_6]
+LEFT90
+OPPOSITE
+[NAME_7]
+RIGHT90
+[NAME_8]
+RANDOMSTEP
++3
+LEFT90
+[NAME_9]
+OPPOSITE
+NEXTNAME
+RANDOMSTEP
+[NAME_10]
+RIGHT90
++5
+LEFT90
+[NAME_11]
+OPPOSITE
+[NAME_12]
+RANDOMSTEP
+RIGHT90
+[NAME_13]
+LEFT90
+-2
+RANDOMSTEP
+[NAME_14]
+OPPOSITE
+[NAME_15]
+RIGHT90
+[NAME_16]
+RANDOMSTEP
+LEFT90
+[NAME_17]
+OPPOSITE
+NEXTNAME
+RANDOMSTEP
+[NAME_18]
+RIGHT90
+[NAME_19]
+LEFT90
++2
+RANDOMSTEP
+[NAME_20]
+OPPOSITE
+[NAME_21]
+RIGHT90
+LEFT90
+[NAME_22]
+RANDOMSTEP
+OPPOSITE
+[NAME_23]
+RIGHT90
+[NAME_24]`;
+        parseInputAndDraw(); 
+
+        soundToggle.addEventListener('click', (e) => {
+            isSoundOn = !isSoundOn;
+            e.currentTarget.style.opacity = isSoundOn ? '1' : '0.5';
+            e.currentTarget.querySelector('i').className = isSoundOn ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+            if (!isSoundOn) {
+                audioWin.pause(); audioWin.currentTime = 0;
+                audioJump.pause(); audioJump.currentTime = 0;
+                audioCheer.pause(); audioCheer.currentTime = 0;
+            }
+        });
+
+        function playClickSound() {
+            if (!isSoundOn) return;
+            const sound = clickPool[clickPoolIdx];
+            if (sound.readyState >= 2 || sound.readyState === 0) {
+                sound.currentTime = 0;
+                sound.play().catch(()=>{});
+            }
+            clickPoolIdx = (clickPoolIdx + 1) % clickPool.length;
+        }
+
+        function playSound(audio) {
+            if (isSoundOn) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log('Audio Blocked', e));
+            }
+        }
+
+        function parseInputAndDraw() {
+            const text = namesInput.value;
+            participants = text.split('\n').map(n => n.trim()).filter(n => n !== '');
+            updateStats(); 
+            initCanvasSize();
+            createWheelCache(); 
+            drawWheelFrame();
+            playClickSound();
+        }
+
+        function updateStats() {
+            const commandPattern = /^([\+\-]\d+|OPPOSITE|RIGHT90|LEFT90|RANDOMSTEP|NEXTNAME|PREVNAME)$/i;
+            const realCount = participants.filter(p => !commandPattern.test(p.trim())).length;
+            activeCountEl.textContent = realCount;
+            const historyItems = historyList.querySelectorAll('.history-item');
+            winnerCountEl.textContent = historyItems.length;
+        }
+
+        function initCanvasSize() {
+            const rect = wheelWrapper.getBoundingClientRect();
+            const size = Math.floor(Math.min(rect.width, rect.height));
+            const dpr = window.devicePixelRatio || 1;
+            if (size === 0) return;
+            canvas.style.width = size + 'px';
+            canvas.style.height = size + 'px';
+            canvas.width = size * dpr;
+            canvas.height = size * dpr;
+        }
+
+        function createWheelCache() {
+            if (participants.length === 0) return;
+            const size = canvas.width; 
+            const dpr = window.devicePixelRatio || 1;
+            const r = (size / 2) - (2 * dpr); 
+            const cx = size / 2;
+            const cy = size / 2;
+            const step = (2 * Math.PI) / participants.length;
+
+            if (!wheelCache) wheelCache = document.createElement('canvas');
+            wheelCache.width = size;
+            wheelCache.height = size;
+            
+            const offCtx = wheelCache.getContext('2d');
+            offCtx.clearRect(0, 0, size, size);
+            offCtx.translate(cx, cy);
+
+            const vibrantColors = [
+                '#FF6B6B', '#FF9F1C', '#FFD93D', '#6BCB77', '#4D96FF',
+                '#9D4EDD', '#FF66C4', '#00C9A7', '#845EC2', '#00D2FC'
+            ];
+            
+            participants.forEach((name, i) => {
+                const startAngle = i * step;
+                const endAngle = startAngle + step;
+                const color = vibrantColors[i % vibrantColors.length];
+                offCtx.beginPath();
+                offCtx.moveTo(0, 0);
+                offCtx.arc(0, 0, r, startAngle, endAngle);
+                offCtx.fillStyle = color;
+                offCtx.fill();
+                offCtx.lineWidth = 1 * dpr;
+                offCtx.strokeStyle = 'rgba(255, 255, 255, 0.2)'; 
+                offCtx.stroke();
+                offCtx.save();
+                offCtx.rotate(startAngle + step / 2);
+                offCtx.textAlign = 'right';
+                offCtx.textBaseline = 'middle';
+                let fontSize = Math.min((2 * Math.PI * (r * 0.85) / participants.length) * 0.55, 32 * dpr);
+                offCtx.font = `700 ${fontSize}px "Prompt", "Kanit", sans-serif`;
+                offCtx.fillStyle = '#FFFFFF';
+                offCtx.shadowColor = 'rgba(0,0,0,0.1)';
+                offCtx.shadowBlur = 0;
+                offCtx.fillText(name, r - (30 * dpr), 0);
+                offCtx.restore();
+            });
+            offCtx.beginPath();
+            offCtx.arc(0, 0, r, 0, 2 * Math.PI);
+            offCtx.lineWidth = 3 * dpr; 
+            offCtx.strokeStyle = 'rgba(255, 255, 255, 0.35)'; 
+            offCtx.stroke();
+        }
+
+        function drawWheelFrame() {
+            if (!wheelCache) return;
+            if (Math.abs(currentRotation - lastDrawnRotation) < 0.005 && isAnimating) return;
+            const width = canvas.width; 
+            const height = canvas.height;
+            const cx = width / 2;
+            const cy = height / 2;
+            ctx.setTransform(1, 0, 0, 1, 0, 0); 
+            ctx.clearRect(0, 0, width, height);
+            ctx.translate(cx, cy);
+            ctx.rotate(currentRotation * Math.PI / 180); 
+            ctx.drawImage(wheelCache, -width/2, -height/2);
+            lastDrawnRotation = currentRotation;
+        }
+
+        // --- CORE UTILITY: Snap to Center ---
+        function getTargetRotationForIndex(idx) {
+            const sliceDeg = 360 / participants.length;
+            const targetAngle = 270 - (idx + 0.5) * sliceDeg;
+            return targetAngle;
+        }
+
+        function getCurrentIndex() {
+            const normalizedRotation = currentRotation % 360;
+            const sliceDeg = 360 / participants.length;
+            return Math.floor( ( (270 - normalizedRotation) % 360 + 360 ) % 360 / sliceDeg );
+        }
+
+        function startPhysicsLoop(target, duration, onCompleteCallback) {
+            if (rafId) cancelAnimationFrame(rafId);
+            targetRotation = target;
+            const distance = targetRotation - currentRotation;
+            const durationSec = duration / 1000;
+            if (durationSec <= 0) {
+                currentRotation = targetRotation;
+                drawWheelFrame();
+                if(onCompleteCallback) onCompleteCallback(); 
+                else checkResult();
+                return;
+            }
+            angularVelocity = (2 * distance) / durationSec; 
+            angularDeceleration = -angularVelocity / durationSec; 
+            lastFrameTime = performance.now();
+            isAnimating = true;
+            rafId = requestAnimationFrame((ts) => physicsTick(ts, onCompleteCallback));
+        }
+
+        function physicsTick(timestamp, onCompleteCallback) {
+            if (!isAnimating) return;
+            const deltaTime = (timestamp - lastFrameTime) / 1000;
+            lastFrameTime = timestamp;
+            const safeDt = Math.min(deltaTime, 0.05); 
+            if (safeDt <= 0.0001) {
+                rafId = requestAnimationFrame((ts) => physicsTick(ts, onCompleteCallback));
+                return;
+            }
+            const prevVelocity = angularVelocity;
+            angularVelocity += angularDeceleration * safeDt;
+            const velocityflipped = (angularDeceleration < 0 && angularVelocity <= 0) || 
+                                    (angularDeceleration > 0 && angularVelocity >= 0);
+
+            if (velocityflipped) {
+                currentRotation = targetRotation;
+                isAnimating = false;
+                drawWheelFrame();
+                if (onCompleteCallback) {
+                    onCompleteCallback(); 
+                } else {
+                    checkResult(); 
+                }
+                return;
+            }
+            currentRotation += ((prevVelocity + angularVelocity) * 0.5) * safeDt;
+            drawWheelFrame();
+            handleTickSound(currentRotation, participants.length);
+            rafId = requestAnimationFrame((ts) => physicsTick(ts, onCompleteCallback));
+        }
+
+        function handleTickSound(rotation, segmentCount) {
+            if (segmentCount <= 0) return;
+            const degreesPerSlice = 360 / segmentCount;
+            const currentTotalTicks = Math.floor(rotation / degreesPerSlice);
+            if (currentTotalTicks !== lastTickSlice) {
+                playClickSound();
+                wheelPointer.classList.remove('tick-anim');
+                void wheelPointer.offsetWidth; 
+                wheelPointer.classList.add('tick-anim');
+                lastTickSlice = currentTotalTicks;
+            }
+        }
+
+        // --- HELPER: FIND COMMANDS ---
+        function getAllCommandIndices() {
+            let indices = [];
+            participants.forEach((p, i) => {
+                if (parseCommand(p)) indices.push(i);
+            });
+            return indices;
+        }
+
+        function startSpinSequence() {
+            if (isSpinning || participants.length === 0) return;
+            
+            isChaining = false;
+            chainCount = 0;
+            actionQueue = [];
+            spinBtn.disabled = true;
+            isSpinning = true;
+
+            const sliceCount = participants.length;
+            const sliceDeg = 360 / sliceCount;
+            
+            // --- RIGGED START: Always start on a Command ---
+            let targetIdx;
+            const commandIndices = getAllCommandIndices();
+            
+            if (commandIndices.length > 0) {
+                const r = Math.floor(Math.random() * commandIndices.length);
+                targetIdx = commandIndices[r];
+            } else {
+                targetIdx = Math.floor(Math.random() * sliceCount);
+            }
+            
+            let snapTarget = getTargetRotationForIndex(targetIdx);
+            
+            const minSpins = 5;
+            let target = currentRotation + (minSpins * 360);
+            const currentMod = target % 360;
+            const snapMod = (snapTarget % 360 + 360) % 360;
+            target += (snapMod - currentMod);
+            
+            if (target < currentRotation + (minSpins * 360)) target += 360;
+
+            lastTickSlice = Math.floor(currentRotation / sliceDeg);
+            
+            startPhysicsLoop(target, 5000); 
+            requestAnimationFrame(() => {
+                enterFullscreen();
+            });
+        }
+
+        function triggerRotateToRelativeIndex(relativeStep, durationMs, callback) {
+            const currentIdx = getCurrentIndex();
+            const count = participants.length;
+            const nextIdx = (currentIdx + relativeStep % count + count) % count;
+            
+            let snapTarget = getTargetRotationForIndex(nextIdx);
+            
+            const sliceDeg = 360 / count;
+            const nominalDelta = -(relativeStep * sliceDeg); 
+            let nominalTarget = currentRotation + nominalDelta;
+            
+            const nominalMod = nominalTarget % 360;
+            const snapMod = (snapTarget % 360 + 360) % 360;
+            
+            let correction = snapMod - nominalMod;
+            if (correction > 180) correction -= 360;
+            if (correction < -180) correction += 360;
+            
+            let finalTarget = nominalTarget + correction;
+            
+            lastTickSlice = Math.floor(currentRotation / sliceDeg);
+            startPhysicsLoop(finalTarget, durationMs, callback);
+        }
+
+        function stepToNextSlice() {
+            // Move 1 slice. Direction doesn't matter much for skip, but forward is standard.
+            triggerRotateToRelativeIndex(1, 400, () => {
+                checkResult();
+            });
+        }
+
+        // --- CORE LOGIC: THE GAME LOOP ---
+        function checkResult() {
+            const idx = getCurrentIndex();
+            let res = participants[idx];
+
+            if (!res || res.trim() === "") {
+                triggerRotateToRelativeIndex(1, 1500, null); 
+                return;
+            }
+
+            const cmd = parseCommand(res);
+            
+            // 1. SAFETY NET (Too many turns)
+            if (chainCount >= CHAIN_LIMIT_MAX) {
+                 if (cmd) {
+                     // Force seek next slice (step-by-step)
+                     setTimeout(() => stepToNextSlice(), 300);
+                 } else {
+                     finishSequence(res, idx);
+                 }
+                 return;
+            }
+
+            // 2. HIT A COMMAND? EXECUTE IT!
+            if (cmd) {
+                // If it's a command, we ALWAYS execute it (whether Locked phase or Normal phase)
+                executeCommand(cmd);
+                return;
+            }
+
+            // 3. HIT A NAME?
+            if (chainCount < CHAIN_LIMIT_LOCKED) {
+                // LOCKED PHASE (< 1): Name NOT allowed.
+                // Slip to next slice silently to find a command.
+                setTimeout(() => stepToNextSlice(), 400);
+            } else {
+                // NORMAL PHASE (>= 1): Name allowed. WIN!
+                finishSequence(res, idx);
+            }
+        }
+
+        function executeCommand(cmd) {
+            let indexStep = 0;
+            
+            // --- RANDOM STEP LOGIC ---
+            if (cmd.text.includes("โดด")) {
+                if (chainCount < CHAIN_LIMIT_LOCKED) {
+                    // RIGGED RANDOM: Must land on a Command
+                    const currentIdx = getCurrentIndex();
+                    const commandIndices = getAllCommandIndices();
+                    const count = participants.length;
+                    
+                    let validSteps = [];
+                    commandIndices.forEach(targetIdx => {
+                        let step = (targetIdx - currentIdx + count) % count;
+                        if (step > 0) validSteps.push(step);
+                    });
+
+                    if (validSteps.length > 0) {
+                        const r = Math.floor(Math.random() * validSteps.length);
+                        indexStep = validSteps[r];
+                    } else {
+                        indexStep = Math.floor(Math.random() * (count - 1)) + 1;
+                    }
+                } else {
+                    // NORMAL RANDOM
+                    indexStep = Math.floor(Math.random() * (participants.length - 1)) + 1;
+                }
+                showToast(`โดด ${indexStep} ช่อง!`); // Show Real Step
+            } else {
+                // Deterministic Step
+                showToast(cmd.text);
+                if (cmd.dir === '+') indexStep = cmd.steps;
+                else indexStep = -cmd.steps;
+            }
+
+            playSound(audioJump);
+            chainCount++;
+
+            setTimeout(() => {
+                triggerRotateToRelativeIndex(indexStep, 1500, () => {
+                   checkResult(); // Loop back to check logic
+                });
+            }, 1000); 
+        }
+
+        function finishSequence(name, idx) {
+            if (isSoundOn) audioWin.play().catch(()=>{});
+            setTimeout(() => {
+                currentRotation = currentRotation % 360;
+                targetRotation = currentRotation; 
+                drawWheelFrame();
+                exitFullscreen();
+                showWinnerModal(name);
+                currentWinnerIndex = idx;
+                isSpinning = false;
+                isChaining = false;
+                spinBtn.disabled = false;
+                playSound(audioCheer);
+            }, 800);
+        }
+
+        let fireworksTimer = null;
+        let isFireworksActive = false;
+
+        function startFireworksLoop() {
+            if (isFireworksActive) return;
+            isFireworksActive = true;
+            const colors = ['#66CCFF', '#A98CFF', '#D6B8FF', '#FFFFFF', '#48BFE3'];
+            const isMobile = window.innerWidth < 768;
+            const particleCount = isMobile ? 30 : 50;
+            (function loop() {
+                if (!isFireworksActive) return;
+                const randomX = Math.random() < 0.5 ? 0.1 : 0.9;
+                confetti({
+                    particleCount: particleCount,
+                    angle: randomX < 0.5 ? 60 : 120, 
+                    spread: 55,
+                    origin: { x: randomX, y: 0.6 },
+                    colors: colors,
+                    startVelocity: isMobile ? 45 : 60,
+                    gravity: 1.2,
+                    decay: 0.92,
+                    scalar: 1.2,
+                    zIndex: 10001,
+                    disableForReducedMotion: true
+                });
+                if (Math.random() > 0.8) {
+                    confetti({
+                        particleCount: particleCount / 2, angle: 90, spread: 120,
+                        origin: { x: 0.5, y: 0.3 }, colors: colors,
+                        startVelocity: 30, decay: 0.95, scalar: 0.8, zIndex: 10001
+                    });
+                }
+                const nextTick = Math.floor(Math.random() * (700 - 300 + 1) + 300);
+                fireworksTimer = setTimeout(loop, nextTick);
+            }());
+        }
+
+        function stopFireworksLoop() {
+            isFireworksActive = false;
+            if (fireworksTimer) {
+                clearTimeout(fireworksTimer);
+                fireworksTimer = null;
+            }
+            try { confetti.reset(); } catch(e) {}
+        }
+
+        function showWinnerModal(name) {
+            winnerNameDisplay.innerText = name;
+            winnerNameDisplay.style.fontSize = '90px'; 
+            modal.classList.add('active');
+            startFireworksLoop();
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    fitTextToContainer(winnerNameDisplay, winnerContainer);
+                });
+            });
+        }
+
+        function fitTextToContainer(textEl, containerEl) {
+            let size = 90; 
+            const minSize = 24; 
+            textEl.style.fontSize = size + 'px';
+            textEl.style.width = '100%';
+            while (
+                (textEl.scrollHeight > containerEl.clientHeight || 
+                 textEl.scrollWidth > containerEl.clientWidth) && 
+                size > minSize
+            ) {
+                size -= 2; 
+                textEl.style.fontSize = size + 'px';
+            }
+        }
+
+        window.moveForward = () => { 
+            if(!isSpinning) triggerRotateToRelativeIndex(1, 500, null); 
+        };
+        window.moveBackward = () => { 
+            if(!isSpinning) triggerRotateToRelativeIndex(-1, 500, null); 
+        };
+        
+        window.closeModalAndRemove = () => {
+            stopFireworksLoop();
+            modal.classList.remove('active');
+            if (currentWinnerIndex > -1) {
+                addToHistory(participants[currentWinnerIndex]);
+                participants.splice(currentWinnerIndex, 1);
+                namesInput.value = participants.join('\n');
+                updateStats();
+                createWheelCache();
+                drawWheelFrame();
+                currentWinnerIndex = -1;
+            }
+        };
+
+        window.clearHistory = () => {
+            if(confirm('ลบประวัติทั้งหมด?')) {
+                historyList.innerHTML = `<div id="history-placeholder" style="text-align:center; padding:3rem 1rem; color:#aaa; opacity:0.8;"><i class="fas fa-cube" style="font-size:2rem; margin-bottom:1rem; opacity:0.5;"></i><br>ยังไม่มีผู้ชนะ</div>`;
+                winnerCountEl.innerText = '0';
+            }
+        };
+
+        function addToHistory(name) {
+            const placeholder = document.getElementById('history-placeholder');
+            if (placeholder) placeholder.remove();
+            const time = new Date().toLocaleTimeString('th-TH', {hour: '2-digit', minute:'2-digit'});
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            item.innerHTML = `<div class="winner-info"><h4>${name}</h4><p>${time}</p></div><i class="fas fa-crown" style="color: var(--color-primary);"></i>`;
+            historyList.prepend(item);
+            const historyItems = historyList.querySelectorAll('.history-item');
+            winnerCountEl.textContent = historyItems.length;
+        }
+
+        function showToast(msg) {
+            jumpToast.innerText = msg;
+            jumpToast.classList.add('show');
+            setTimeout(() => jumpToast.classList.remove('show'), 1500);
+        }
+
+        function parseCommand(str) {
+            if (!str) return null;
+            const s = str.toUpperCase().trim();
+            const match = s.match(/^([\+\-])(\d+)$/);
+            if (match) return { dir: match[1], steps: parseInt(match[2]), text: (match[1]==='+'?'เดินหน้า ':'ถอยหลัง ') + match[2] };
+            if (s === 'OPPOSITE') return { dir: '+', steps: Math.round(participants.length/2), text: 'ตรงข้าม!' };
+            if (s === 'RIGHT90') return { dir: '+', steps: Math.round(participants.length/4), text: 'ขวา 90°!' };
+            if (s === 'LEFT90') return { dir: '-', steps: Math.round(participants.length/4), text: 'ซ้าย 90°!' };
+            if (s === 'RANDOMSTEP') { const r = Math.floor(Math.random()*(participants.length-1))+1; return { dir:'+', steps:r, text:`โดด ${r} ช่อง!`}; }
+            if (s === 'NEXTNAME') return { dir:'+', steps:1, text:'คนถัดไป!' };
+            if (s === 'PREVNAME') return { dir:'-', steps:1, text:'คนก่อนหน้า!' };
+            return null;
+        }
+    });
+</script>
+</body>
+</html>
